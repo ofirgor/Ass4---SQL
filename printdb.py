@@ -2,7 +2,6 @@ from persistence import *
 
 def main():
     # 1. print all tables
-
     tables_names = {k: v for k, v in repo.__dict__.items() if isinstance(v, Dao)}
     for table in sorted(tables_names):
         table_name = table.capitalize()
@@ -25,13 +24,15 @@ def main():
         print(" ".join([str(x) for x in row]))
 
     # 3. print a detailed activity report
+
     print('\n' + "Activities report")
     activities_report = repo.execute_command('SELECT activities.date, products.description, activities.quantity,\
                                          (SELECT employees.name FROM employees WHERE activities.activator_id = employees.id) as seller_name,\
                                         (SELECT suppliers.name FROM suppliers WHERE activities.activator_id = suppliers.id) as supplier_name\
-                                        FROM activities JOIN products ON activities.product_id = products.id')
+                                        FROM activities JOIN products ON activities.product_id = products.id\
+                                        ORDER BY  activities.date')
     table_data = [[val.decode() if isinstance(val, bytes) else val for val in row] for row in activities_report]
-    for row in sorted(table_data, key=lambda x: x[0]):
+    for row in table_data:
         print(tuple(row))
 
 

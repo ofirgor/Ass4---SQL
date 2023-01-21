@@ -48,7 +48,6 @@ class Activitie(object):
 class Repository(object):
     def __init__(self):
         self._conn = sqlite3.connect('bgumart.db')
-        self._conn.text_factory = bytes
         self.employees = Dao(Employee, self._conn)
         self.suppliers = Dao(Supplier, self._conn)
         self.products = Dao(Product, self._conn)
@@ -95,7 +94,7 @@ class Repository(object):
             );
         """)
 
-    def execute_command(self, script: str) -> list:
+    def execute_command(self, script):
         return self._conn.cursor().execute(script).fetchall()
  
 # singleton

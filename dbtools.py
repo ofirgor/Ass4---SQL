@@ -8,7 +8,7 @@ def row_map(row, col_mapping, dto_type):
 
 def orm(cursor, dto_type):
     # the following line retrieve the argument names of the constructor
-    args = inspect.getfullargspec(dto_type.__init__).args
+    args = inspect.getargspec(dto_type.__init__).args
 
     # the first argument of the constructor will be 'self', it does not correspond
     # to any database field, so we can ignore it.
@@ -58,9 +58,10 @@ class Dao(object):
         c.execute(stmt, params)
         return orm(c, self._dto_type)
 
-    def update(self, col_name, new_val, id_product):
-        stmt = f'UPDATE {self._table_name} SET {col_name}= ? WHERE id= ?'
-        self._conn.cursor().execute(stmt, (new_val, id_product))
+    def update_quantity(self, new_val, id_product):
+        stmt = 'UPDATE {} SET quantity=? WHERE id=?'.format(self._table_name)
+        c = self._conn.cursor()
+        c.execute(stmt, (new_val, id_product))
 
     def delete(self, **keyvals):
         column_names = keyvals.keys()
